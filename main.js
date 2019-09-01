@@ -50,8 +50,7 @@ function init() {
   this.db = firebase.firestore();
   this.day = this.db.collection('days').doc('daysEntry');
   this.counter = 0;
-  this.data = this.counter;
-  this.date = getDate();
+  this.date = null;
   this.$counterInterface = document.getElementById('counter-container');
   this.$firebaseuiAuthContainer = document.getElementById('firebaseui-auth-container');
   this.$day = document.getElementById('dayValue');
@@ -71,6 +70,7 @@ function bindEvents() {
 function initDisplay() {
   getData().then( res => {
     this.counter = res.day;
+    this.date = res.date;
     updateHtmlDayValue();
   })
 }
