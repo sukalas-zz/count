@@ -18,16 +18,39 @@ body {
     color: white;
     font-size: 3rem;
 }
+#counter-container.is-hidden {
+    display: none;
+}
 #days-container {
     height: auto;
     width: auto;
     color: white;
+    min-height: 5rem;
 }
 #controls-container {
     display: flex;
     flex-direction: row;
+    min-height: 3rem;
 }
-#reset-day-container,#add-day-container{
+#erroLogsContainer {
+    position: absolute;
+}
+#errorMessage {
+    opacity: 1;
+    font-size: 0.95rem;
+    color: rgba(255, 0, 0, 0.6);
+    text-align: left;
+    line-height: 1rem;
+    padding-top: 0.5rem;
+    transition: opacity 0.17s ease-out;
+}
+#errorMessage.is-hidden {
+    display: block;
+    opacity: 0;
+    transition: opacity 0.1s ease-in;
+}
+#reset-day-container, #add-day-container{
+    display: flex;
     flex: 1;
 }
 #add-day-container button {
@@ -37,13 +60,34 @@ button {
     width: 100%;
     height: 100%;
     background: transparent;
-    border: 1px solid white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
+}
+#reset-day-container button {
+    border-right: 1px solid rgba(255, 255, 255, 0);
+}
+#reset-day-container button:active {
+    border-right: 1px solid white;
 }
 button:hover {
     cursor: pointer;
     background: rgba(255, 255, 255, 0.1);
 }
+button:active {
+
+    border: 1px solid white;
+}
 button:focus {
     outline: none;
+}
+#firebaseui-auth-container {
+    display: block;
+    position: absolute;
+    width: 400px;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+#firebaseui-auth-container.is-hidden {
+    display: none;
 }

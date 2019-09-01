@@ -12,7 +12,8 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <div id="counter-container">
+    <div id="firebaseui-auth-container"></div>
+    <div id="counter-container" class="is-hidden">
         <div id="days-container">
             <span>Day</span>
             <span id="dayValue">0</span>
@@ -25,6 +26,11 @@
                 <button>+</button>
             </div>
         </div>
+        <div id="erroLogsContainer">
+            <div id="errorMessage"></div>
+        </div>
     </div>
+    <script src="https://cdn.firebase.com/libs/firebaseui/4.1.0/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/4.1.0/firebaseui.css" />
 </body>
 </html>
