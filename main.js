@@ -84,23 +84,23 @@ function getData() {
 function resetDaysDb(){
   this.counter = 0;
   updateHtmlDayValue();
-  this.day.update({day: this.counter, date: getDate(), firstDay: true});
+  this.day.update({day: this.counter, date: getDateInMsNow(), firstDay: true});
   this.$error.classList.add('is-hidden');
 }
 
 function incrementDay() {
   getData().then( res => {
-    if( dayEntryIsValid() || res.firstDay ) {
+    if( isEntryValid() || res.firstDay ) {
       this.counter = res.day + 1;
       updateHtmlDayValue();
-      this.day.update({day: this.counter, date: getDate(), firstDay: false});
+      this.day.update({day: this.counter, date: getDateInMsNow(), firstDay: false});
     } else {
       logHtmlError();
     }
   })
 }
 
-function getDate() {
+function getDateInMsNow() {
   return new Date().getTime();
 }
 
@@ -110,24 +110,36 @@ function updateHtmlDayValue() {
 
 function logHtmlError() {
   this.$error.classList.remove('is-hidden');
-  const hoursToLogAgain = 24 - (msToDays(getDate()) - msToDays(this.date));
-  this.$error.innerText = `You can log again in ${hoursToLogAgain} hrs`;
+  this.$error.innerText = `Time left: ${remainingTimeFormated()}`;
   setTimeout(() => {
     this.$error.classList.add('is-hidden');
-  }, 3000);
+  }, 30000);
 }
 
-function calculateHoursLeftToEnableDayLoging(){
-  return 24 - (msToDays(getDate()) - msToDays(this.date))
+function remainingTimeFormated(){
+  const timeDiff = getTimeDiff();
+  const clockTime = msToTime(timeDiff);
+  return `${ 24 - clockTime.hours}:${ 60 - clockTime.minutes}:${ 60 - clockTime.seconds}`;
+}
+function isEntryValid() {
+  return isWithin24Hours();
+}
+function getTimeDiff() {
+  return getDateInMsNow() - this.date;
 }
 
-function dayEntryIsValid() {
-  const daysRecord = msToDays(this.date);
-  const daysNow =  msToDays(getDate());
-  const daysDiff = daysNow - daysRecord;
-  return ((daysDiff > 1) && (daysDiff < 2)) ? true : false;
+function isWithin24Hours() {
+  const msDiff = getTimeDiff();
+  return msDiff <= 1 ? true : false;
 }
 
-function msToDays(ms) {
-  return (((ms / 1000 ) / 60) / 60) / 24
+function msToTime(ms) {
+  const seconds = Math.floor(ms/1000);
+  const minutes = Math.floor(seconds/60);
+  const hours = Math.floor(minutes/60);
+  return {
+    hours: hours % 24,
+    minutes: minutes % 60,
+    seconds: seconds % 60,
+  };
 }

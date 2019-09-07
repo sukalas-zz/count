@@ -1,0 +1,22 @@
+{
+  "name": "count",
+  "version": "1.0.0",
+  "description": "counts days 1 by one and only 1 per day",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sukalas/count.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sukalas/count/issues"
+  },
+  "homepage": "https://github.com/sukalas/count#readme",
+  "dependencies": {
+    "firebase": "^6.6.0"
+  }
+}
