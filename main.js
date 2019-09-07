@@ -51,7 +51,7 @@ const init = () => {
   this.day = this.db.collection('days').doc('daysEntry');
   this.counter = 0;
   this.date = null;
-  this.timeOfLastClick = 0;
+  this.loggerIsBusy = false;
   this.$counterInterface = document.getElementById('counter-container');
   this.$firebaseuiAuthContainer = document.getElementById('firebaseui-auth-container');
   this.$day = document.getElementById('dayValue');
@@ -96,8 +96,8 @@ const incrementDay = () => {
       updateHtmlDayValue();
       this.day.update({day: this.counter, date: getDateInMs(), firstDay: false});
     } else {
-      const timeDiff =  getDateInMs() - this.timeOfLastClick;
-      if(timeDiff > 3000) {
+      if(!this.loggerIsBusy) {
+        this.loggerIsBusy = true;
         logHtmlError();
         hideHtmlError();
       }
@@ -115,13 +115,17 @@ const updateHtmlDayValue = () => {
 
 const logHtmlError = () => {
   this.$error.innerText = `Time left: ${remainingTimeFormated()}`;
-  clearTimeout(showMessage);
+  if(!this.loggerIsBusy) {
+    clearTimeout(showMessage);
+  }
 }
 
-const showMessage = () => this.$error.classList.add('is-hidden');
+const showMessage = () => { 
+  this.$error.classList.add('is-hidden');
+  this.loggerIsBusy = false;
+};
 
 const hideHtmlError = () => {
-          this.timeOfLastClick = getDateInMs();
   this.$error.classList.remove('is-hidden');
   this.$error.innerText = `Time left: ${remainingTimeFormated()}`;
   setTimeout(showMessage, 3000);
