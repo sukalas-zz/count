@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => init())
 
-function init() {
+const init = () => {
   const firebaseConfig = {
     apiKey: "AIzaSyD0PQvEE39LuCa1B7X08dhDf245fcIHmSw",
     authDomain: "days-66754.firebaseapp.com",
@@ -19,11 +19,11 @@ function init() {
     firebase.auth.GoogleAuthProvider.PROVIDER_ID
     ],
     // tosUrl and privacyPolicyUrl accept either url string or a callback
-    // function.
+    // const.
     // Terms of service url/callback.
     tosUrl: '<your-tos-url>',
     // Privacy policy url/callback.
-    privacyPolicyUrl: function() {
+    privacyPolicyUrl: () => {
     window.location.assign('<your-privacy-policy-url>');
     }
   };
@@ -51,6 +51,7 @@ function init() {
   this.day = this.db.collection('days').doc('daysEntry');
   this.counter = 0;
   this.date = null;
+  this.timeOfLastClick = 0;
   this.$counterInterface = document.getElementById('counter-container');
   this.$firebaseuiAuthContainer = document.getElementById('firebaseui-auth-container');
   this.$day = document.getElementById('dayValue');
@@ -60,14 +61,14 @@ function init() {
   bindEvents();
 }
 
-function bindEvents() {
+const bindEvents = () => {
   const incrementDayCount = document.getElementById('add-day-container');
   const resetDayCount = document.getElementById('reset-day-container');
   incrementDayCount.addEventListener("click", () => incrementDay());
   resetDayCount.addEventListener("click", () => resetDaysDb());
 }
 
-function initDisplay() {
+const initDisplay = () => {
   getData().then( res => {
     this.counter = res.day;
     this.date = res.date;
@@ -75,65 +76,77 @@ function initDisplay() {
   })
 }
 
-function getData() {
+const getData = () => {
   return this.day.get().then( doc => {
     return doc.data();
   })
 }
 
-function resetDaysDb(){
+const resetDaysDb = () => {
   this.counter = 0;
   updateHtmlDayValue();
-  this.day.update({day: this.counter, date: getDateInMsNow(), firstDay: true});
+  this.day.update({day: this.counter, date: getDateInMs(), firstDay: true});
   this.$error.classList.add('is-hidden');
 }
 
-function incrementDay() {
+const incrementDay = () => {
   getData().then( res => {
     if( isEntryValid() || res.firstDay ) {
       this.counter = res.day + 1;
       updateHtmlDayValue();
-      this.day.update({day: this.counter, date: getDateInMsNow(), firstDay: false});
+      this.day.update({day: this.counter, date: getDateInMs(), firstDay: false});
     } else {
-      logHtmlError();
+      const timeDiff =  getDateInMs() - this.timeOfLastClick;
+      if(timeDiff > 3000) {
+        logHtmlError();
+        hideHtmlError();
+      }
     }
   })
 }
 
-function getDateInMsNow() {
+const getDateInMs = () => {
   return new Date().getTime();
 }
 
-function updateHtmlDayValue() {
+const updateHtmlDayValue = () => {
   this.$day.innerText = this.counter;
 }
 
-function logHtmlError() {
-  this.$error.classList.remove('is-hidden');
+const logHtmlError = () => {
   this.$error.innerText = `Time left: ${remainingTimeFormated()}`;
-  setTimeout(() => {
-    this.$error.classList.add('is-hidden');
-  }, 30000);
+  clearTimeout(showMessage);
 }
 
-function remainingTimeFormated(){
+const showMessage = () => this.$error.classList.add('is-hidden');
+
+const hideHtmlError = () => {
+          this.timeOfLastClick = getDateInMs();
+  this.$error.classList.remove('is-hidden');
+  this.$error.innerText = `Time left: ${remainingTimeFormated()}`;
+  setTimeout(showMessage, 3000);
+}
+
+const remainingTimeFormated = () => {
   const timeDiff = getTimeDiff();
   const clockTime = msToTime(timeDiff);
   return `${ 24 - clockTime.hours}:${ 60 - clockTime.minutes}:${ 60 - clockTime.seconds}`;
 }
-function isEntryValid() {
+
+const isEntryValid = () => {
   return isWithin24Hours();
 }
-function getTimeDiff() {
-  return getDateInMsNow() - this.date;
+
+const getTimeDiff = () => {
+  return getDateInMs() - this.date;
 }
 
-function isWithin24Hours() {
+const isWithin24Hours = () => {
   const msDiff = getTimeDiff();
   return msDiff <= 1 ? true : false;
 }
 
-function msToTime(ms) {
+const msToTime = (ms) => {
   const seconds = Math.floor(ms/1000);
   const minutes = Math.floor(seconds/60);
   const hours = Math.floor(minutes/60);
