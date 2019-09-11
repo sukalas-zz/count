@@ -138,16 +138,17 @@ const remainingTimeFormated = () => {
 }
 
 const isEntryValid = () => {
-  return isWithin24Hours();
+  return isNotWithin24Hours();
 }
 
 const getTimeDiff = () => {
-  return getDateInMs() - this.date;
+  return msToDays(getDateInMs()) - msToDays(this.date);
 }
 
-const isWithin24Hours = () => {
-  const msDiff = getTimeDiff();
-  return msDiff <= 1 ? true : false;
+const isNotWithin24Hours = () => {
+  const moreThanADay = getTimeDiff() >= 1 ? true : false;
+  const lessThanTwoDays = getTimeDiff() <= 2 ? true : false
+  return moreThanADay && lessThanTwoDays;
 }
 
 const msToTime = (ms) => {
@@ -159,4 +160,8 @@ const msToTime = (ms) => {
     minutes: minutes % 60,
     seconds: seconds % 60,
   };
+}
+
+const msToDays = (ms) => {
+  return ((((ms/1000)/60)/60)/24)
 }
